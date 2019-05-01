@@ -168,31 +168,133 @@
         }
     };
 
+    var shapes = [
+    {
+        point: new Point(view.size.width,view.size.height) * Point.random(),
+        shape: null,
+        onKey: function(color){
+            this.shape = new Path.Circle(this.point,800);
+            this.shape.fillColor = color[0];
+        }
+    },
+    {
+        point1: new Point(view.size.width,view.size.height) * Point.random(),
+        point2: new Point(view.size.width,view.size.height) * Point.random(),
+        shape: null,
+        onKey: function(color){
+            this.shape = new Path.Rectangle(new Rectangle(this.point1,this.point2))
+            this.shape.fillColor = color[0];
+        }
+
+    }, {
+        
+        point: new Point(view.size.width,view.size.height) * Point.random(),
+        shape: null,
+        onKey: function(color, random){
+            this.shape = new Path.RegularPolygon(this.point, random,800);
+            this.shape.fillColor = color[0];
+        }
+
+    },
+    {
+        point: new Point(view.size.width,view.size.height) * Point.random(),
+        shape: null,
+        onKey: function(color, random){
+            this.shape = new Path.Star(this.point, random, 900, 800);
+            this.shape.fillColor = color[0];
+        }
+    },{
+        point: new Point(view.size.width,view.size.height) * Point.random(),
+        shape: null,
+        onKey: function(color, random){
+            this.shape = new Path.Ellipse(new Rectangle(this.point,new Size(2500,1500)));
+            this.shape.fillColor = color[0];
+        },
+        onFrame: function (event){
+            this.shape.fillColor.hue += 1
+            this.shape.rotate(Math.ceil(Math.random() * 20));
+            this.shape.scale(.9);
+        }
+    },
+    {
+        point: new Point(view.size.width,view.size.height) * Point.random(),
+        children: [],
+        onKey: function (colors,random){
+            for (var i = 0; i < random; i++) {
+                var rect = new Rectangle([0, 0], [500, 500]);
+                rect.center = this.point;
+                var path = new Path.Rectangle(rect, 6);
+                path.fillColor = colors[i % 4];
+                var scale = (1 - i / random) * 20;
+                path.scale(scale);
+                this.children.push(path);
+            }
+            //console.log(this.children);
+
+
+        }
+    }
+   
+   ]
+
+
     function onKeyDown(event){
         if(keyData[event.key]){
-            var maxPoint = new Point(view.size.width,view.size.height);
-            var randomPoint = Point.random();
-            var point = maxPoint * randomPoint;
-            var circle = new Path.Circle(point,600);
-            circle.fillColor = keyData[event.key].color
+
+
             keyData[event.key].sound.play()
-            circles.push(circle);
+
+            index = Math.floor(Math.random() * (shapes.length - 1))
+            random = Math.floor((Math.random() * 5) + 1)
+            shapes[index].onKey(['red', 'yellow', 'blue', 'green'], random);
+
+            if (shapes[index].point){
+                shapes[index].point = new Point(view.size.width,view.size.height) * Point.random()
+            }else{
+                shapes[index].point1 = new Point(view.size.width,view.size.height) * Point.random()
+                shapes[index].point2 = new Point(view.size.width,view.size.height) * Point.random()
+            }
+            
+            circles.push(shapes[index])
+
         }
     }
 
     function onFrame(event){
         for(var i=0;i<circles.length;i++){
-           circles[i].fillColor.hue += 1;
-           circles[i].scale(.9);
-           if(circles[i].area < 1){
-               circles[i].remove();
-               circles.splice(i, 1);
+           if (circles[i].shape){
+            circles[i].shape.fillColor.hue += 1;
+            circles[i].shape.rotate(Math.ceil(Math.random() * 20))
+            circles[i].shape.scale(.93);
+            if(circles[i].shape.area < 1){
+                circles[i].shape.remove();
+                circles.splice(i, 1);
+            }
+           }else if (circles[i].children){
+            //var children = project.activeLayer.children;
+               console.log(circles[i].children);
+               for (var j = 0, l = circles[i].children.length; j < l; j++) {
+                var item = circles[i].children[j];
+                item.rotate(Math.sin((event.count + i) / 10) * 7);
+                item.rotate(Math.ceil(Math.random() * 20))
+                item.scale(.93);
+                item.fillColor.hue += 1;
+                if(item.area < 1){
+                    circles[i].children[j].remove();
+                    circles[i].children.splice(j,1);
+                }
+            }
+            if( circles[i].children.length == 0){
+                circles.splice(i, 1);
+            }
            }
         }
     }
+    
+
  </script>
 </head>
 <body>
-<canvas id="myCanvas" resize></canvas>
+<canvas id="myCanvas"></canvas>
 </body>
 </html>

@@ -149,10 +149,5 @@ var data = {
 		}),
 		color: '#8e44ad'
 	},
-	m: {
-		sound: new Howl({
-  		urls: ['sounds/moon.mp3']
-		}),
-		color: '#2c3e50'
-	}
+
 }
