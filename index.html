@@ -300,14 +300,17 @@
                //console.log(circles[i].children);
                for (var j = 0, l = circles[i].children.length; j < l; j++) {
                 var item = circles[i].children[j];
-                item.rotate(Math.sin((event.count + i) / 10) * 7);
-                item.rotate(Math.ceil(Math.random() * 20))
-                item.scale(.9);
-                item.fillColor.hue += 1;
-                if(item.area < 1){
-                    circles[i].children[j].remove();
-                    circles[i].children.splice(j,1);
+                if(item){
+                    item.rotate(Math.sin((event.count + i) / 10) * 7);
+                    item.rotate(Math.ceil(Math.random() * 20))
+                    item.scale(.9);
+                    item.fillColor.hue += 1;
+                    if(item.area < 1){
+                        circles[i].children[j].remove();
+                        circles[i].children.splice(j,1);
                 }
+                }
+                
             }
             if( circles[i].children.length == 0){
                 circles.splice(i, 1);
