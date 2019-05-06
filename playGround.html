@@ -230,7 +230,6 @@
                 path.scale(scale);
                 this.children.push(path);
             }
-            //console.log(this.children);
 
 
         }
@@ -240,9 +239,10 @@
             strokeWidth: 30,
             strokeCap: 'square'
         }),
+        amount: 10,
         onKey: function (colors,random){
-            for (var i = 0; i <= 10; i++) {
-                this.path.add(new Point(i / 10, 1) * view.size);
+            for (var i = 0; i <= (random + this.amount); i++) {
+                this.path.add(new Point(i / (random + this.amount), 1) * view.size);
             }
         }
     }
@@ -275,7 +275,7 @@
             if (shapes[index].point){
                 shapes[index].point = new Point(view.size.width,view.size.height) * Point.random()
             }
-            else{
+            else if ( shapes[index].point1){
                 shapes[index].point1 = new Point(view.size.width,view.size.height) * Point.random()
                 shapes[index].point2 = new Point(view.size.width,view.size.height) * Point.random()
             }
@@ -296,8 +296,6 @@
                 circles.splice(i, 1);
             }
            }else if (circles[i].children){
-            //var children = project.activeLayer.children;
-               //console.log(circles[i].children);
                for (var j = 0, l = circles[i].children.length; j < l; j++) {
                 var item = circles[i].children[j];
                 if(item){
@@ -316,34 +314,35 @@
                 circles.splice(i, 1);
             }
            }else if (circles[i].path){
-            // Loop through the segments of the path:
             for (var j = 0; j <= 10; j++) {
+                
                 var segment = circles[i].path.segments[j];
         
-                // A cylic value between -1 and 1
                 var sinus = Math.sin(event.time * 20 + i);
                 
-                // Change the y position of the segment point:
                 segment.point.y = sinus * 50 + 100;
             }
-            // Uncomment the following line and run the script again
-            // to smooth the path:
-            //circles[i].path.smooth()
+
+            circles[i].path.smooth()
             
            }
            
            
         }
-        //circles[i].path.remove();
            circles.splice(i, 1);
     }
     
 
  </script>
+ <script>
+     alert('PRESS ANY KET TO GET HYPED')
+ </script>
+
 </head>
 
 <body>
     <canvas id="myCanvas"></canvas>
+
 </body>
 
 </html>
